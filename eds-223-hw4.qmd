@@ -1,5 +1,5 @@
 ---
-title: "eds-223-hw4"
+title: "Ocean Superfarms: Finding the Best Spots to Grow Seafood"
 format: html
 author: "Vedika Shirtekar" 
 date: "11/10/2025"
@@ -136,6 +136,7 @@ Next, we need to process the SST and depth data so that they can be combined. In
 ```{r}
 # Mean sst
 avg_sst <- mean(sst)
+plot(avg_sst)
 ```
 
 -   convert average SST from Kelvin to Celsius
@@ -160,6 +161,7 @@ plot(avg_sst)
 ```{r}
 # Depth has slightly different resolutions, need to resample
 ?resample
+resample()
 ```
 
 ### **Find suitable locations**
