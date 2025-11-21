@@ -2,7 +2,7 @@
 title: "Ocean Superfarms: Finding the Best Spots to Grow Seafood"
 format: html
 author: "Vedika Shirtekar" 
-date: "11/10/2025"
+date: "11//2025"
 format:
   pdf: 
     code-fold: false
@@ -70,8 +70,8 @@ library(ggplot2) # Load "ggplot2" for data visualization
 library(tmap) # Load "tmap" for functions to create and layer maps
 library(kableExtra) # Load "kableExtra" for table formatting
 library(stars) # Load "stars" for integration with "sf"
-library(raster)
-library(terra)
+library(raster) 
+library(terra) 
 ```
 
 ```{r}
@@ -81,17 +81,19 @@ eez <- read_sf(here::here("data", "wc_regions_clean.shp"))
 
 ```{r}
 # Bathymetry raster
-depth <- raster(here::here("data", "depth.tif"))
+depth <- rast(here::here("data", "depth.tif"))
 ```
 
 ```{r}
-# Create a list of the tif files for SST
+# Create a list of the tiff files for SST
 sst_years <- list.files(path="data/", # File path
                         pattern = "average_annual", # File names matching pattern
                         full.names = TRUE) # Reference entire file names matching                                             this pattern
 # Stack all rasters (stack() used earlier)
 sst <- rast(sst_years)
-
+names(sst)
+#class(sst)
+#class(depth)
 plot(sst)
 ```
 
@@ -114,6 +116,7 @@ if (st_crs(spatial_objects$depth) != ref_crs) {
 } else {
   message("depth CRS already matches eez CRS.")
 }
+
 ```
 
 ```{r}
@@ -125,6 +128,7 @@ if (st_crs(spatial_objects$sst) != ref_crs) {
 } else {
   message("sst CRS already matches eez CRS.")
 }
+
 ```
 
 ### **Process data**
@@ -135,6 +139,8 @@ Next, we need to process the SST and depth data so that they can be combined. In
 
 ```{r}
 # Mean sst
+sst <- project(sst, depth)
+
 avg_sst <- mean(sst)
 plot(avg_sst)
 ```
@@ -154,14 +160,55 @@ plot(avg_sst)
 
     -   resample the depth data to match the resolution of the SST data using the nearest neighbor approach
 
+```{r}
+# Depth has slightly different resolutions, need to resample
+?resample # Use raster version
+#depth_resampled <- resample(depth, sst, method = "near")
+#plot(depth_resampled)
+```
+
 -   check that the depth and SST match in resolution, extent, and coordinate reference system
 
     -   hint: can the rasters be stacked?
 
 ```{r}
-# Depth has slightly different resolutions, need to resample
-?resample
-resample()
+# match crs
+crs(avg_sst) == crs(depth) # match
+
+
+#avg_sst <- project(avg_sst, depth)
+
+depth_sst_crop <- crop(depth, avg_sst)
+
+depth_sst_crop <- resample(depth_sst_crop, avg_sst, method = "near")
+#depth_sst_crop <- project(depth_sst_crop, avg_sst)
+
+
+
+# Check again...
+crs(avg_sst) == crs(depth) # do not match
+#crs(avg_sst) == crs(depth_sst) # do not match
+
+# Don't match, so resample
+#res(avg_sst) == res(depth)
+
+# cannot be stacked since extents do not match... after resample, crop
+c(depth_sst_crop, avg_sst) 
+# extent do not match... need to crop BUT after resampling
+# crop first 
+ext(depth) == ext(depth_sst_crop)
+
+```
+
+```{r}
+# crop depth to sst extent
+plot(depth_sst_crop)
+plot(depth)
+#tm_shape(depth_sst_crop) + tm_raster()
+#tm_shape(depth) + tm_raster()
+
+ext(depth_sst_crop) == ext(depth)
+
 ```
 
 ### **Find suitable locations**
@@ -172,7 +219,78 @@ To find suitable locations for marine aquaculture, we’ll need to find location
 
     -   hint: set suitable values to `1` and unsuitable values to `0`
 
+```{r}
+# preferred range: 
+#sea surface temperature: 11-30°C
+
+## reclassify avg_sst
+# reclass matrix 
+reclass_matrix_sst <- matrix(
+  c(-Inf, 11, 0,
+    11, 30, 1, 
+    30, Inf, 0),
+  ncol = 3, 
+  byrow = T
+)
+
+avg_sst_reclass <- classify(avg_sst, rcl = reclass_matrix_sst)
+
+plot(avg_sst_reclass)
+
+# create a raster mask? suitable vs unsuitable?
+
+
+
+```
+
+```{r}
+## Now, reclassify depth
+
+#depth: 0-70 meters below sea level
+
+# reclass matrix 
+reclass_matrix_depth <- matrix(
+  c(-Inf, -70, 0,
+    -70, 0, 1, 
+    0, Inf, 0),
+  ncol = 3, 
+  byrow = T
+)
+
+depth_reclass <- classify(depth_sst_crop, rcl = reclass_matrix_depth)
+plot(depth_reclass)
+
+# make sure extent match
+```
+
 -   find locations that satisfy both SST and depth conditions
+
+```{r}
+# crop extent? 
+# crs(depth) == crs(avg_sst)
+# 
+# 
+# ext(depth) == ext(avg_sst)
+
+# can they be stacked?
+c(depth_reclass, avg_sst_reclass)
+crs(depth_reclass) == crs(avg_sst_reclass)
+
+# need to find BOTH locations... need to filter for suitable locations then join?
+# suitable areas with raster multiplication
+?lapp
+
+#lapp(x = c(avg_sst_reclass,depth_reclass), fun = func(x,y) retunx*y)
+multiply <- function(x,y){ 
+  multi_raster <- x*y
+  return(multi_raster)
+  }
+
+#plot(lapp(x = c(avg_sst_reclass,depth_reclass), fun = multiply))
+
+avg_sst_depth <- lapp(x = c(avg_sst_reclass,depth_reclass), fun = multiply)
+plot(avg_sst_depth)
+```
 
 ### **Determine the most suitable EEZ**
 
@@ -185,3 +303,7 @@ We want to determine the total suitable area within each EEZ in order to rank zo
 -   find the total suitable area within each EEZ
 
     -   hint: it might be helpful to rasterize the EEZ data
+
+```{r}
+
+```
