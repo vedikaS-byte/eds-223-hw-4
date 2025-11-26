@@ -11,6 +11,8 @@ editor:
     wrap: 72
 #editor_options: 
   #chunk_output_type: console
+editor_options: 
+  chunk_output_type: console
 ---
 
 # **Homework Assignment 4:** Prioritizing potential aquaculture
@@ -337,8 +339,101 @@ plot(mask(avg_sst_depth_suitable, eez))
 
 suitable_cells_eez <-  mask(avg_sst_depth_suitable, eez)
 suitable_cells_eez
-# inherited method not found, need to do spatvector recognition for polygons
-?extract 
-eez
-tm_shape(eez) + tm_polygons(fill = "rgn")+ tm_shape(suitable_cells_eez) + tm_raster() 
+
+plot(suitable_cells_eez)
+
+# 
+# cellSize
+# extract (sum)
+# join to eez  (join by region ID)
+
+
+
+```
+
+```{r}
+# calculate cell areas (m²)
+cell_area <- cellSize(avg_sst_depth_suitable, unit = "km")
+
+# mask areas by suitability 
+# keep area only for suitable cells
+suitable_area <- cell_area * avg_sst_depth_suitable
+
+# sum suitable area in each eez polygon
+# this will return a data frame
+ea <- extract(suitable_area, eez, fun = sum, na.rm = TRUE)
+
+
+# join extracted results back to eez
+eez_sf <- st_as_sf(eez) # to have geometry
+eez_joined <- eez_sf %>%
+  left_join(ea, by = c("rgn_id"= "ID"))
+
+# convert back to spatvector
+eez_final <- vect(eez_joined)
+
+```
+
+```{r}
+# plot
+tm_shape(eez_final) +
+  tm_polygons(
+    "area",
+    palette = "-mako",
+    style = "cont", # Continuous
+    title = "Suitable Area (km²)",
+    #n = 5
+  ) +
+tm_layout( # Center title outside bounding box
+    main.title = "Suitable Areas for Oyster Aquaculture in California EEZs \n          Based on Preferred Temperature and Depth",
+     main.title.size = 1.5,
+    legend.outside = TRUE, # Place legend outside map frame
+    legend.outside.position = "right", # Place legend to right
+    component.autoscale = FALSE, # Disable autoscaling for title
+   outer.margins = c(0.01, 0.25, 0.01, 0.05) 
+
+    ) + 
+   tm_scale_bar( # Add scale bar for scale
+     position = c(-.01, 0.08))  +
+   # Move 1% from left and 8% from bottom 
+   tm_compass( # Add compass for orientation
+     type = "8star",        
+     position = c("right", "top"))
+
+```
+
+```{r}
+# table with kableextra for zonal stats 
+# need: region and total area covered as well as how many places within each region
+eez_final
+
+
+
+```
+
+## Create a generalizable funciton 
+
+```{r}
+# To make your workflow generalizable, you must create a function that has the following characteristics:
+# 
+# arguments:
+# minimum and maximum sea surface temperature
+# minimum and maximum depth
+# species name
+
+# species preferences defined before function
+species_preference <- function(min_temp, max_temp, min_depth, max_depth, species_name){ 
+  
+  
+  
+  
+  }
+
+
+
+# outputs:
+# map of EEZ regions colored by amount of suitable area
+# species name should be included in the map’s title
+
+
 ```
