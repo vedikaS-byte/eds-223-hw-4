@@ -12,6 +12,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+
 # **Ocean Superfarms: Finding the Best Spots to Grow Seafood**
 
 ## Learning Outcomes
@@ -65,6 +66,7 @@ temperature ranges, depth limits, and species selection.
 
 1.  Load in the necessary packages.
 
+
 ```{r}
 #| output: false
 # Import packages
@@ -79,6 +81,7 @@ library(stars) # Load "stars" for integration with "sf"
 library(terra) # Load "terra" for SpatVector and SpatRaster operations
 ```
 
+
 2.  Load in the spatial data:
     2.  Use `vect()` to read in the West Coast EEZ shapefile.
 
@@ -86,6 +89,7 @@ library(terra) # Load "terra" for SpatVector and SpatRaster operations
 
     4.  Create a list of the SST `tif` files using `list.files()`. Then,
         combine the SST rasters into a raster stack using `rast()`.
+
 
 ```{r}
 #| output: false
@@ -110,8 +114,10 @@ sst_years <- list.files(path="data/", # File path
 sst <- rast(sst_years)
 ```
 
+
 3.  Pass conditional checks to transform any mismatching CRS for a
     spatial object to the reference CRS (`eez`) using `st_crs()`.
+
 
 ```{r}
 # Create list of spatial objects
@@ -144,6 +150,7 @@ if (st_crs(spatial_objects$sst) != ref_crs) {
 }
 ```
 
+
 ### **Data Processing**
 
 The following steps to process the SST and depth data are required prior
@@ -154,6 +161,7 @@ to being combined.
     together accurately. Then, create a single raster of average SST
     from 2008-2012 using `mean()`.
 
+
 ```{r}
 # Reproject to match sst CRS
 depth <- project(depth, sst)
@@ -162,16 +170,20 @@ depth <- project(depth, sst)
 avg_sst <- mean(sst)
 ```
 
+
 4.  Subtract 273.15 from the single average SST raster (`avg_sst`) to
     convert average temperatures from Kelvin to Celsius.
+
 
 ```{r}
 # Update avg_sst in degrees Celsius
 avg_sst <- avg_sst - 273.15
 ```
 
+
 5.  Ensure that both rasters match in terms of their CRS, resolutions,
     and extents prior to cropping.
+
 
 ```{r}
 # Do the CRS match?
@@ -185,9 +197,11 @@ message("Do the extents match: ", ext(avg_sst) == ext(depth))
 
 ```
 
+
 6.  Crop the `depth` raster to match the extent of the `avg_sst` raster,
     then resample the cropped raster (`depth_sst_crop`) to match the
     resolution of `avg_sst` using the nearest neighbor method.
+
 
 ```{r}
 # Use crop() to crop depth to the extent of avg_sst
@@ -197,12 +211,14 @@ depth_sst_crop <- crop(depth, avg_sst)
 depth_sst_crop <- resample(depth_sst_crop, avg_sst, method = "near")
 ```
 
+
 ### **Finding suitable locations**
 
 7.  Reclassify `avg_sst` and `depth` using a defined reclassification
     matrix for the oyster-specific SST and depth range in `classify()`.
     The reclassification matrix should set suitable values to `1` and
     unsuitable values to `0`.
+
 
 ```{r}
 # Preferred oyster range for SST: 11-30°C
@@ -236,11 +252,13 @@ reclass_matrix_depth <- matrix(
 depth_reclass <- classify(depth_sst_crop, rcl = reclass_matrix_depth)
 ```
 
+
 8.  Identify suitable (value = `1`) and unsuitable locations (value =
     `0`) for both reclassified SST and depth by defining a function that
     multiplies two rasters. Then, stack the reclassified layers with
     `lapp()` and apply the function to generate a combined binary
     suitability raster.
+
 
 ```{r}
 # Create multiplication function to reference in lapp
@@ -257,6 +275,7 @@ avg_sst_depth <- lapp(
   fun = multiply) # Apply multiplication function 
 ```
 
+
 ### **Determine the most suitable EEZ**
 
 In order to rank zones by priority, it was important to determine the
@@ -264,12 +283,15 @@ total suitable area within each EEZ. The total area of suitable locations within
 
 9.  Project `eez` to match the CRS of `avg_sst_depth.`
 
+
 ```{r}
 # Project
 eez <- project(eez, avg_sst_depth)
 ```
 
+
 10. Use `ifel()` to identify suitable cells within the West Coast EEZs by replacing values of `0` with `NA` (unsuitable) and converting all remaining values to `1` (suitable).
+
 
 ```{r}
 # Select suitable areas
@@ -278,8 +300,10 @@ avg_sst_depth_suitable <- ifel(avg_sst_depth == 0,
                                1) # Otherwise assign "1"
 ```
 
+
 11. Calculate the total suitable aquaculture area (km²) within each EEZ by masking, calculating cell areas, and summing suitable raster cells by region. 
   a. Rasterize each EEZ such that each pixel is labeled with its EEZ region. Rasterizing eez is crucial in this step because vector EEZ polygons are needed to operate in raster space so area can be summarized per region using raster-based functions (ex.` zonal()`).
+
 
 ```{r}
 # Rasterize eez regions
@@ -287,14 +311,18 @@ eez_rast <- rasterize(eez, avg_sst_depth_suitable,
                       field = "rgn") # By region
 ```
 
+
   b. Create a mask to keep only raster values inside EEZ boundaries and remove everything outside by setting it to `NA.`
+
 ```{r}
 # Identify suitable cells in mask 
 suitable_cells_eez <-  mask(avg_sst_depth_suitable, eez)
 ```
+
   
   c. Create a raster using `cellSize()` where each cell contains its surface area in km². Then, use ` zonal()` to calculate the total suitable area within each EEZ by summing suitable raster cells areas by zone and joining the results to the eez_sf spatial data.  
   
+
 ```{r}
 # Calculate cell areas (km^2)
 cell_area <- cellSize(suitable_cells_eez, unit = "km")
@@ -314,15 +342,14 @@ area_eez <- area_eez %>% st_as_sf()
 
 ```
 
+
 12. Use `tmap` functions to create a map of suitable area within each EEZ.
 
-```{r}
-#| message: false
-#| warning: false
-#| results: 'hide'
 
+```{r}
+#| output: false
 # Create map
-oyster_pref_map <- tm_shape(area_eez) +
+tm_shape(area_eez) +
   tm_polygons(
     "suitable_area_km2", # Color by suitable_area_km2 variable
     palette = "-mako", # Reverse blue scale
@@ -355,21 +382,11 @@ oyster_pref_map <- tm_shape(area_eez) +
      position = c("right", "top")) + # Adjust position
   tm_basemap("Esri.OceanBasemap") # Ocean basemap
 
-
-oyster_pref_map
 ```
-
-```{r}
-#| output: false
-# Save finalized map to figs
-tmap_save(oyster_pref_map, filename = "figs/oyster_pref_map.png", width = 8, height = 10)
-```
-
-![](figs/oyster_pref_map.png)
-**Map 1. Finalized map of suitable aquaculture areas within West Coast EEZs for oysters.**
 
 
 13. Create a table using `kableExtra` to display both the total suitable area and the proportion of each EEZ that is suitable for oyster aquaculture, enabling comparison across regions independent of EEZ size.
+
 
 ```{r}
 # Table with kableextra for prop of suitable areas to EEZ area
@@ -395,11 +412,11 @@ area_eez %>%
 ```
 
 
-
 ## Part 2: Generalized Function of Aquaculture for Species Preferences
 The `species_preference` function applies the generalized workflow (Part 1) to streamline identification of suitable zones based on species-specific sea surface temperature (SST) and depth ranges for any species of interest. The function takes minimum and maximum SST values, minimum and maximum depth limits, and a species name as inputs and returns a map of EEZ regions shaded by total suitable area.
 
 13. Verify coordinate reference systems (CRS) and load required spatial datasets before creating and running the function to ensure all spatial objects are correctly prepared for processing.
+
 ```{r}
 #| output: false
 # Load in data again
@@ -444,7 +461,9 @@ if (st_crs(spatial_objects$sst) != ref_crs) {
 }
 ```
 
+
 14. Define the `multiply` function to support raster multiplication within the `species_preference` function when used with `lapp()`.
+
 ```{r}
 # Define multiply function for global raster multiplication
 multiply <- function(x,y){ 
@@ -453,7 +472,9 @@ multiply <- function(x,y){
   }
 ```
 
+
 15. Create a function called `species_preference` that incorporates the Part 1 workflow to generate a map of suitable aquaculture areas within West Coast EEZs based on species-specific SST and depth parameters.
+
 ```{r}
 # This function takes arguments:
 # minimum and maximum sea surface temperature
@@ -590,7 +611,6 @@ tm_shape(area_eez) +
 # Map of EEZ regions colored by amount of suitable area
 ```
 
-
 ```{r}
 #| message: false
 #| warning: false
@@ -602,16 +622,17 @@ species_pref_map
 
 ```
 
-
 ```{r}
 #| output: false
 # Save finalized map to figs
 tmap_save(species_pref_map, filename = "figs/species_pref_map.png", width = 8, height = 10)
+
 ```
 
 
 
 
 
+
 ![](figs/species_pref_map.png)
-**Map 2. Finalized map of suitable aquaculture areas within West Coast EEZs for red abalone.**
+
