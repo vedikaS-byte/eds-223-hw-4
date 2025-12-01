@@ -17,6 +17,9 @@ editor_options:
 
 ## **Purpose**
 
+**GitHub Repository Link:**
+<https://github.com/vedikaS-byte/suitability-aquaculture-analysis>
+
 There is a growing global need to sustainably feed expanding human
 populations, and one promising solution is marine aquaculture.
 Aquaculture is defined as the organized cultivation, feeding,
