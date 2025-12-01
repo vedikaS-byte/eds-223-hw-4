@@ -12,7 +12,33 @@ The purpose of this assignment is to evaluate the suitability of West Coast Excl
 
 This repository contains:
 
+```         
+suitability-aquaculture-analysis
+│   README.md
+│   aquaculture-suitability-analysis.qmd
+│   aquaculture-suitability-analysis.pdf
+│   eds-223-hw-2.Rproj
+│   figs
+│   └───AdobeStock_921645340_Preview.svg
+│   └───oyster_pref_map.png
+│   └───species_pref_map.png
+│
+└───.gitignore
+     └───data
+         └───wc_regions_clean.prj
+         └───depth.tif
+         └───average_annual_sst_2008.tif
+         └───average_annual_sst_2009.tif
+         └───average_annual_sst_2010.tif
+         └───average_annual_sst_2011.tif
+         └───average_annual_sst_2012.tif
+```
+
 ## Data Description & Access
+
+[SeaLifeBase](https://www.sealifebase.ca/search.php) is a publicly available online database that provides information on a wide range of marine species based on criteria such as commercial importance and taxonomic group. Each species profile includes details on depth range, temperature preference, geographic distribution, life history, and classification. The database is open access and does not require any downloads to use.
+
+For this analysis, West Coast Exclusive Economic Zone (EEZ) boundaries were obtained from Marineregions.org to define maritime boundaries. The [General Bathymetric Chart of the Oceans (GEBCO)](https://www.gebco.net/data_and_products/gridded_bathymetry_data/#area) is a global terrain model that provides geospatial information, such as elevation, for both ocean and land surfaces at a 15-arc-second grid resolution (GEBCO, n.d.). Bathymetry data for this analysis were downloaded from GEBCO as a `tif` file. This analysis also used satellite-derived average sea surface temperature (SST) data from 2008–2012 to characterize mean SST within each EEZ. Although the GeoTIFF files were provided through course materials, the original data are publicly available from [NOAA’s 5 km Daily Global Satellite Sea Surface Temperature Anomaly v3.1 product](https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php).
 
 ## Authors & Additional Contributions
 
@@ -20,22 +46,22 @@ This repository is maintained by Vedika Shirtekar as part of the Master of Envir
 
 ## References
 
-## References
+[1] Alleway, H. K., Gillies, C. L., Bishop, M. J., Gentry, R. R., Theuerkauf, S. J., & Jones, R. (2018). *The ecosystem services of marine aquaculture: Valuing benefits to people and nature*. BioScience, 69(1), 59–68. <https://doi.org/10.1093/biosci/biy137>
 
-Alleway, H. K., Gillies, C. L., Bishop, M. J., Gentry, R. R., Theuerkauf, S. J., & Jones, R. (2018). *The ecosystem services of marine aquaculture: Valuing benefits to people and nature*. BioScience, 69(1), 59–68. <https://doi.org/10.1093/biosci/biy137>
+[2] *Gridded bathymetry data*. (n.d.). GEBCO. Retrieved November 30, 2025, from <https://www.gebco.net/data-products/gridded-bathymetry-data#area>
 
-*Gridded bathymetry data*. (n.d.). GEBCO. Retrieved November 30, 2025, from <https://www.gebco.net/data-products/gridded-bathymetry-data#area>
+[3] *Haliotis rufescens, Red abalone: Fisheries.* (n.d.). Retrieved November 30, 2025, from <https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
 
-*Haliotis rufescens, Red abalone: Fisheries.* (n.d.). Retrieved November 30, 2025, from <https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
+[4] *Marine regions.* (n.d.). Retrieved November 28, 2025, from <https://www.marineregions.org/eez.php>
 
-*Marine regions.* (n.d.). Retrieved November 28, 2025, from <https://www.marineregions.org/eez.php>
+*Monterey Bay Abalone farm shows what sustainable aquaculture can be like.* (n.d.). Earth Island Journal. Retrieved November 29, 2025, from
 
-*Monterey Bay Abalone farm shows what sustainable aquaculture can be like.* (n.d.). Earth Island Journal. Retrieved November 29, 2025, from <https://www.earthisland.org/journal/index.php/articles/entry/monterey_bay_abalone_farm_shows_what_sustainable_aquaculture_can_be_like/>
+<https://www.earthisland.org/journal/index.php/articles/entry/monterey_bay_abalone_farm_shows_what_sustainable_aquaculture_can_be_like/>
 
-*NOAA coral reef watch daily 5km satellite coral bleaching heat stress SST anomaly product* (version 3.1). (n.d.). Retrieved November 29, 2025, from <https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php>
+[5] *NOAA coral reef watch daily 5km satellite coral bleaching heat stress SST anomaly product* (version 3.1). (n.d.). Retrieved November 29, 2025, from <https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php>
 
-Oliver, R. (2025). *Homework assignment 4.* Retrieved November 28, 2025, from <https://eds-223-geospatial.github.io/assignments/HW4.html#fnref1>
+[6] Oliver, R. (2025). *Homework assignment 4.* Retrieved November 28, 2025, from <https://eds-223-geospatial.github.io/assignments/HW4.html#fnref1>
 
-Wright, A., Moody, C., & Gross, J. (2025). *Composition of California’s aquaculture industry and surveying its disease challenges and management strategies.* Aquaculture Reports, 42, 102799. Retrieved November 29, 2025, from
+[7] Wright, A., Moody, C., & Gross, J. (2025). *Composition of California’s aquaculture industry and surveying its disease challenges and management strategies.* Aquaculture Reports, 42, 102799. Retrieved November 29, 2025, from
 
 <https://doi.org/10.1016/j.aqrep.2025.102799>

@@ -15,7 +15,7 @@ editor_options:
 
 # **Ocean Superfarms: Finding the Best Spots to Grow Seafood**
 
-## Purpose
+## **Purpose**
 
 There is a growing global need to sustainably feed expanding human
 populations, and one promising solution is marine aquaculture.
@@ -109,7 +109,8 @@ depth <- rast(here::here("data", "depth.tif"))
 # Create a list of the tiff files for SST
 sst_years <- list.files(path="data/", # File path
                         pattern = "average_annual", # File names matching pattern
-                        full.names = TRUE) # Reference entire file names matching this pattern
+                        full.names = TRUE) # Reference entire file names matching 
+                                          # this pattern
 
 # Stack all rasters
 sst <- rast(sst_years)
@@ -599,9 +600,9 @@ cell_area <- cellSize(suitable_cells_eez, unit = "km")
 # Convert to sf object
 eez_sf <- st_as_sf(eez) # To have geometry
 
-area_eez <- zonal(cell_area * suitable_cells_eez, # Identify rea of suitable locations only
+area_eez <- zonal(cell_area * suitable_cells_eez, # Identify area of suitable locations 
                   eez_rast, # Rasterized eez
-                  fun = "sum", na.rm = T) %>%  # Sum areas of all cells within each EEZ zone 
+                  fun = "sum", na.rm = T) %>%  # Sum areas of cells within each EEZ zone 
   rename(suitable_area_km2 = area) %>% # Rename for naming conventions
   as.data.frame() %>% # Convert to data frame
   left_join(eez_sf, by = "rgn") # Join on region
@@ -654,8 +655,12 @@ tm_shape(area_eez) +
 #| message: false
 #| warning: false
 #| results: 'hide'
-# Call function 
-species_pref_map <- species_preference(min_temp = 8, max_temp = 18, min_depth = -25, max_depth = 0, species_name = "Red Abalone")
+# Call function for Red Abalone and preferred temp/depth range
+species_pref_map <- species_preference(min_temp = 8, 
+                                       max_temp = 18, 
+                                       min_depth = -25, 
+                                       max_depth = 0, 
+                                       species_name = "Red Abalone")
 
 species_pref_map 
 ```
@@ -669,7 +674,7 @@ tmap_save(species_pref_map, filename = "figs/species_pref_map.png", width = 8, h
 ![](figs/species_pref_map.png) **Map 2. Finalized map of suitable
 aquaculture areas within West Coast EEZs for red abalone.**
 
-### Reflection 
+### **Reflection**
 
 The red abalone, a critically endangered marine gastropod, is a
 commercially valuable species with strong potential for aquaculture. The
@@ -690,33 +695,39 @@ in Washington, Central California, and Northern California.
 
 ## References
 
-Alleway, H. K., Gillies, C. L., Bishop, M. J., Gentry, R. R.,
-Theuerkauf, S. J., & Jones, R. (2018). The ecosystem services of marine
-aquaculture: Valuing benefits to people and nature. BioScience, 69(1),
-59–68. https://doi.org/10.1093/biosci/biy137
+\[1\] Alleway, H. K., Gillies, C. L., Bishop, M. J., Gentry, R. R.,
+Theuerkauf, S. J., & Jones, R. (2018). *The ecosystem services of marine
+aquaculture: Valuing benefits to people and nature*. BioScience, 69(1),
+59–68. <https://doi.org/10.1093/biosci/biy137>
 
-Gridded bathymetry data. (n.d.). GEBCO. Retrieved November 30, 2025,
-from https://www.gebco.net/data-products/gridded-bathymetry-data#area
+\[2\] *Gridded bathymetry data*. (n.d.). GEBCO. Retrieved November 30,
+2025, from
+<https://www.gebco.net/data-products/gridded-bathymetry-data#area>
 
-Haliotis rufescens,  Red abalone  : Fisheries. (n.d.). Retrieved
+\[3\] *Haliotis rufescens, Red abalone: Fisheries.* (n.d.). Retrieved
 November 30, 2025, from
-https://www.sealifebase.ca/summary/Haliotis-rufescens.html
+<https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
 
-Marine regions. (n.d.). Retrieved November 28, 2025, from
-https://www.marineregions.org/eez.php
+\[4\] *Marine regions.* (n.d.). Retrieved November 28, 2025, from
+<https://www.marineregions.org/eez.php>
 
-Monterey bay abalone farm shows what sustainable aquaculture can be
-like. (n.d.). Earth Island Journal.
-https://www.earthisland.org/journal/index.php/articles/entry/monterey_bay_abalone_farm_shows_what_sustainable_aquaculture_can_be_like/
+*Monterey Bay Abalone farm shows what sustainable aquaculture can be
+like.* (n.d.). Earth Island Journal. Retrieved November 29, 2025, from
 
-NOAA coral reef watch daily 5km satellite coral bleaching heat stress
-SST anomaly product (version 3.1). (n.d.). Retrieved November 30, 2025,
-from https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php
+<https://www.earthisland.org/journal/index.php/articles/entry/monterey_bay_abalone_farm_shows_what_sustainable_aquaculture_can_be_like/>
 
-Oliver, R. (2025). Homework assignment 4. Retrieved November 28, 2025,
-from https://eds-223-geospatial.github.io/assignments/HW4.html#fnref1
+\[5\] *NOAA coral reef watch daily 5km satellite coral bleaching heat
+stress SST anomaly product* (version 3.1). (n.d.). Retrieved November
+29, 2025, from
+<https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php>
 
-Wright, A., Moody, C., & Gross, J. (2025). Composition of California’s
-aquaculture industry and surveying its disease challenges and management
-strategies. Aquaculture Reports, 42, 102799.
-https://doi.org/10.1016/j.aqrep.2025.102799
+\[6\] Oliver, R. (2025). *Homework assignment 4.* Retrieved November 28,
+2025, from
+<https://eds-223-geospatial.github.io/assignments/HW4.html#fnref1>
+
+\[7\] Wright, A., Moody, C., & Gross, J. (2025). *Composition of
+California’s aquaculture industry and surveying its disease challenges
+and management strategies.* Aquaculture Reports, 42, 102799. Retrieved
+November 29, 2025, from
+
+<https://doi.org/10.1016/j.aqrep.2025.102799>
