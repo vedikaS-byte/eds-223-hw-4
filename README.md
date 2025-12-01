@@ -16,6 +16,26 @@ This repository contains:
 
 ## Authors & Additional Contributions
 
-This repository is maintained by Vedika Shirtekar as part of the Master of Environmental Data Science program at the University of California, Santa Barbara. Thank you to The Bren School of Environmental Science and Management for facilitating data access and documentation.
+This repository is maintained by Vedika Shirtekar as part of the Master of Environmental Data Science program at the University of California, Santa Barbara. Thank you to the Bren School of Environmental Science and Management for facilitating data access and documentation.
 
 ## References
+
+## References
+
+Alleway, H. K., Gillies, C. L., Bishop, M. J., Gentry, R. R., Theuerkauf, S. J., & Jones, R. (2018). *The ecosystem services of marine aquaculture: Valuing benefits to people and nature*. BioScience, 69(1), 59–68. <https://doi.org/10.1093/biosci/biy137>
+
+*Gridded bathymetry data*. (n.d.). GEBCO. Retrieved November 30, 2025, from <https://www.gebco.net/data-products/gridded-bathymetry-data#area>
+
+*Haliotis rufescens, Red abalone: Fisheries.* (n.d.). Retrieved November 30, 2025, from <https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
+
+*Marine regions.* (n.d.). Retrieved November 28, 2025, from <https://www.marineregions.org/eez.php>
+
+*Monterey Bay Abalone farm shows what sustainable aquaculture can be like.* (n.d.). Earth Island Journal. Retrieved November 29, 2025, from <https://www.earthisland.org/journal/index.php/articles/entry/monterey_bay_abalone_farm_shows_what_sustainable_aquaculture_can_be_like/>
+
+*NOAA coral reef watch daily 5km satellite coral bleaching heat stress SST anomaly product* (version 3.1). (n.d.). Retrieved November 29, 2025, from <https://coralreefwatch.noaa.gov/product/5km/index_5km_ssta.php>
+
+Oliver, R. (2025). *Homework assignment 4.* Retrieved November 28, 2025, from <https://eds-223-geospatial.github.io/assignments/HW4.html#fnref1>
+
+Wright, A., Moody, C., & Gross, J. (2025). *Composition of California’s aquaculture industry and surveying its disease challenges and management strategies.* Aquaculture Reports, 42, 102799. Retrieved November 29, 2025, from
+
+<https://doi.org/10.1016/j.aqrep.2025.102799>
