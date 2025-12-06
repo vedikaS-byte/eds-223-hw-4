@@ -17,6 +17,8 @@ suitability-aquaculture-analysis
 │   README.md
 │   aquaculture-suitability-analysis.qmd
 │   aquaculture-suitability-analysis.pdf
+│   blog_post_aquaculture_suitability_analysis.qmd
+│   blog_post_aquaculture_suitability_analysis.pdf
 │   eds-223-hw-2.Rproj
 │   figs
 │   └───AdobeStock_921645340_Preview.svg
@@ -50,7 +52,7 @@ This repository is maintained by Vedika Shirtekar as part of the Master of Envir
 
 [2] *Gridded bathymetry data*. (n.d.). GEBCO. Retrieved November 30, 2025, from <https://www.gebco.net/data-products/gridded-bathymetry-data#area>
 
-[3] *Haliotis rufescens, Red abalone: Fisheries.* (n.d.). Retrieved November 30, 2025, from <https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
+[3] *Haliotis rufescens,Red abalone: Fisheries.* (n.d.). Retrieved November 30, 2025, from <https://www.sealifebase.ca/summary/Haliotis-rufescens.html>
 
 [4] *Marine regions.* (n.d.). Retrieved November 28, 2025, from <https://www.marineregions.org/eez.php>
 
